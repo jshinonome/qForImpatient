@@ -12,3 +12,5 @@ As the files are q notebook, you have to use vscode-q to open the files.
     -   `dracula-theme.theme-dracula`
 3.  git clone `https://github.com/jshinonome/qForImpatient`
 4.  for most notebook cells, guess the returns and run them to confirm
+
+Strongly recommend to read through **[Q for Mortals](https://code.kx.com/q4m3/)**, by Jeffry A. Borror
