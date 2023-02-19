@@ -1,1 +1,14 @@
-[{"kind":1,"language":"markdown","value":"## Quick Start\n\n### Installation\n\nRefer to [installing kdb+](https://code.kx.com/q/learn/install/)\n\n### Start a Process\n\nStart a q process on port 1800, and connect from vscode-q\n\n```shell\ncd qForImpatient\nq -p 1800\n```\n","outputs":[]},{"kind":1,"language":"markdown","value":"### Important Options\n\n| command                      | parameter                | start script | commend line                  |\n| ---------------------------- | ------------------------ | ------------ | ----------------------------- |\n| console size                 | `c [width length]`       | `-c 50 160`  | `\\c 50 160`                   |\n| immediate garbage collection | `g 1`                    | `-g 1`       | `\\g 1`                        |\n| load file or directory       | `l [q file or hdb path]` | -            | `\\l /hdb/path` or `\\l file.q` |\n| port                         | `p [port number]`        | `-p 1800`    | `\\p 1800`                     |\n| secondary processes          | `s [thread number]`      | `-s 9`       | `\\s 9`                        |\n| limit memory                 | `w [unit in MB]`         | `-w 4000`    | `\\w 4000`                     |\n\nappend parameter to q start script\n\n```shell\nq -s 9\n```\n\nrun the command line on q console\n\n```shell\nq\nq)\\s 9\n```\n\nor\n\n```shell\nq\nq)system\"s 9\"\n```\n","outputs":[]}]
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "## Quick Start\n\n### Installation\n\nRefer to [installing kdb+](https://code.kx.com/q/learn/install/)\n\n### Start a Process\n\nStart a q process on port 1800, and connect from vscode-q\n\n```shell\ncd qForImpatient\nq -p 1800\n```\n",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### Important Options\n\n| command                      | parameter                | start script | commend line                  |\n| ---------------------------- | ------------------------ | ------------ | ----------------------------- |\n| console size                 | `c [width length]`       | `-c 50 160`  | `\\c 50 160`                   |\n| immediate garbage collection | `g 1`                    | `-g 1`       | `\\g 1`                        |\n| load file or directory       | `l [q file or hdb path]` | -            | `\\l /hdb/path` or `\\l file.q` |\n| port                         | `p [port number]`        | `-p 1800`    | `\\p 1800`                     |\n| secondary processes          | `s [thread number]`      | `-s 9`       | `\\s 9`                        |\n| limit memory                 | `w [unit in MB]`         | `-w 4000`    | `\\w 4000`                     |\n\nappend parameter to q start script\n\n```shell\nq -s 9\n```\n\nrun the command line on q console\n\n```shell\nq\nq)\\s 9\n```\n\nor\n\n```shell\nq\nq)system\"s 9\"\n```\n",
+    "outputs": []
+  }
+]

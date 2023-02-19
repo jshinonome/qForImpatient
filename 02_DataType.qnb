@@ -1,1 +1,971 @@
-[{"kind":1,"language":"markdown","value":"### Date Types\n\n| \\*  | n   | c   | name      | size | literal                       | null | inf |\n| --- | --- | --- | --------- | ---- | ----------------------------- | ---- | --- |\n|     | 0   |     | list      |      |                               |      |     |\n| \\*  | 1   | b   | boolean   | 1    | 0b                            |      |     |\n|     | 2   | g   | guid      | 16   |                               | 0Ng  |     |\n|     | 5   | h   | short     | 2    | 0h                            | 0Nh  | 0Wh |\n|     | 6   | i   | int       | 4    | 0i                            | 0Ni  | 0Wi |\n| \\*  | 7   | j   | long      | 8    | 0j                            | 0Nj  | 0Wj |\n|     | 8   | e   | real      | 4    | 0e                            | 0Ne  | 0We |\n| \\*  | 9   | f   | float     | 8    | 0f                            | 0n   | 0w  |\n| \\*  | 10  | c   | char      | 1    | \" \"                           | \" \"  |     |\n| \\*  | 11  | s   | symbol    |      | \\`                            | \\`   |     |\n| \\*  | 12  | p   | timestamp | 8    | 2000.01.01D00:00:00.000000000 | 0Np  | 0Wp |\n|     | 13  | m   | month     | 4    | 2000.01m                      | 0Nm  |     |\n| \\*  | 14  | d   | date      | 4    | 2000.01.01                    | 0Nd  | 0Wd |\n|     | 16  | n   | timespan  | 8    | 00:00:00.000000000            | 0Nn  | 0Wn |\n|     | 17  | u   | minute    | 4    | 00:00                         | 0Nu  | 0Wu |\n|     | 18  | v   | second    | 4    | 00:00:00                      | 0Nv  | 0Wv |\n|     | 19  | t   | time      | 4    | 00:00:00.000                  | 0Nt  | 0Wt |\n|     | 98  |     | table     |      |                               |      |     |\n|     | 99  |     | dict      |      |                               |      |     |\n\n> \\* important primitive data types\n\n#### Test Data Types\n\n-   `.Q.ty`: test data type function, return a char(`c` column)\n    -   lower letter: atom\n    -   upper letter: generic list\n    -   empty char: anything else\n-   `type`: test data type function, return a short number(`n` column)\n    -   negative: atom\n    -   0: mixed types list\n    -   positive: list, table and dict etc.\n\n#### Cast Data Types\n\n-   `$`: cast function\n    -   use `c` or `name` column to cast a non-string\n    -   use upper `c` column to cast a string\n","outputs":[]},{"kind":2,"language":"q","value":".Q.ty 0f","outputs":[]},{"kind":2,"language":"q","value":".Q.ty 0 1f","outputs":[]},{"kind":2,"language":"q","value":".Q.ty (0;`a)","outputs":[]},{"kind":2,"language":"q","value":"type 0f","outputs":[]},{"kind":2,"language":"q","value":"type 0 1f","outputs":[]},{"kind":2,"language":"q","value":"type (0;`a)","outputs":[]},{"kind":2,"language":"q","value":"\"p\"$1","outputs":[]},{"kind":2,"language":"q","value":"`timestamp$1","outputs":[]},{"kind":2,"language":"q","value":"/ NOT RECOMMENDED\n12h$1","outputs":[]},{"kind":2,"language":"q","value":"\"D\"$\"2022-10-07\"","outputs":[]},{"kind":1,"language":"markdown","value":"#### Atom\n\n-   `1b` - true\n-   `0b` - false\n-   `\" \"` - a char atom, the null char atom\n-   `\"\"` - a string, list of char, not an atom\n-   symbol atom as below\n\n```q\n/ a symbol atom, starts with backtick\n`7203.T\n\n/ a socket symbol atom, starts with backtick and colon\n`:localhost:1800\n\n/ a file symbol atom, starts with backtick and colon\n`:trade.csv\n```\n","outputs":[]},{"kind":2,"language":"q","value":"/ generate a random GUID\n1?0Ng","outputs":[]},{"kind":2,"language":"q","value":"1+0N","outputs":[]},{"kind":2,"language":"q","value":"/ in memory, \n/   null long 0N = MIN_LONG -9223372036854775808\n/   -Infinity -0W = MIN_LONG+1 -9223372036854775807\n/   Infinity 0W = MAX_LONG 9223372036854775807\n0W+1","outputs":[]},{"kind":2,"language":"q","value":"0W+2","outputs":[]},{"kind":2,"language":"q","value":"0W-1","outputs":[]},{"kind":2,"language":"q","value":"sum 1 0N","outputs":[]},{"kind":2,"language":"q","value":"sum 1 0W","outputs":[]},{"kind":1,"language":"markdown","value":"#### List(Array)\n\n-   `enlist` - convert any to a list\n-   `()` - an empty list\n-   `,` - join\n-   `(),` - convert an atom to a list\n-   `count` - get length of the list\n-   `first` - get the first item in a list\n-   `last` - get the last item in a list\n-   `type` of generic list, includes same data type atoms, is a positive short integer\n-   `type` of non generic list is 0h, hence **list of strings is 0h**\n","outputs":[]},{"kind":2,"language":"q","value":"/ list of boolean\n111000b;\n\n/ list of long\n1 2 3;\n\n/ list of float\n1 2 3f;\n1.0 2 3;\n\n/ list of timestamp\n2022.10.09D11 2022.10.09D12 2022.10.09D13;\n\n/ list of date\n2022.10.09 2022.10.10 2022.10.11;\n\n/ list of char\n\"string\";\n\n/ list of string\n(\"7203.T\";\"8306.T\";\"4921.T\");\n\n/ list of symbol\n`7203.T`8306.T`4921.T;","outputs":[]},{"kind":2,"language":"q","value":"type enlist `a;","outputs":[]},{"kind":2,"language":"q","value":"type (), `a;","outputs":[]},{"kind":2,"language":"q","value":"/ list of list of symbol\ntype enlist `a`b`c;","outputs":[]},{"kind":2,"language":"q","value":"/ still list of symbol\ntype (), `a`b`c;","outputs":[]},{"kind":2,"language":"q","value":"/ list includes identifier\nfloat0: 3.1415;\nfloat1: 2.7182;\n(float0;float1;1.414)","outputs":[]},{"kind":2,"language":"q","value":"/ list of different data types\n(`a;\"a\";1 2 3)","outputs":[]},{"kind":2,"language":"q","value":"/ join an atom to a list\nsymbols: `a`b`c;\n99,symbols","outputs":[]},{"kind":2,"language":"q","value":"/ join a list to a list\nsymbols: `a`b`c;\n99 99,symbols","outputs":[]},{"kind":2,"language":"q","value":"/ 1 2 3 is one item\ncount (`a;\"a\";1 2 3)","outputs":[]},{"kind":2,"language":"q","value":"first (`a;\"a\";1 2 3)","outputs":[]},{"kind":2,"language":"q","value":"last (`a;\"a\";1 2 3)","outputs":[]},{"kind":1,"language":"markdown","value":"##### Raze Lists\n\n-   `raze` or `(,/)` - raze list of lists\n-   `(,//)` - raze recursively\n","outputs":[]},{"kind":2,"language":"q","value":"(,/)(`a`b`c;\"abc\";(1 2 3;4 5 6;7 8 9))","outputs":[]},{"kind":2,"language":"q","value":"(,//)(,/)(`a`b`c;\"abc\";(1 2 3;4 5 6;7 8 9))","outputs":[]},{"kind":1,"language":"markdown","value":"##### Access and Update Item in List\n\n-   `list[indices]` or `list@indices` - access item in list\n-   `list[indices]:newItem` - update item in list\n-   `list[indices;indices...]` or `list . (indices;indices...)` - access item in nested list\n-   `list[indices;indices...]:newItem` - update item in nested list","outputs":[]},{"kind":2,"language":"q","value":"longList: 1 2 3 4;\nlongList@1","outputs":[]},{"kind":2,"language":"q","value":"longList: 1 2 3 4;\nlongList[2]:9;\nlongList","outputs":[]},{"kind":2,"language":"q","value":"longList: 1 2 3 4;\nlongList[1 3]:9;\nlongList","outputs":[]},{"kind":2,"language":"q","value":"mixedList: (1;`a;3.14;2022.10.09);\nmixedList@0 2","outputs":[]},{"kind":2,"language":"q","value":"mixedList: (1;`a;3.14;2022.10.09);\nmixedList[2]:2.7182;\nmixedList","outputs":[]},{"kind":2,"language":"q","value":"mixedList: (1;`a;3.14;2022.10.09);\nmixedList[1 3]:2.7182;\nmixedList","outputs":[]},{"kind":2,"language":"q","value":"/ longList is a generic list, which to be updated with same data type item\nlongList: 1 2 3 4;\nlongList[2]:`a;\nlongList","outputs":[]},{"kind":1,"language":"markdown","value":"##### String vs Symbol\n\n-   `-3!` - std output of the item, control by console size `-c`, mainly for log output\n-   `string` - convert each item to string format\n-   `sv` - join strings or symbols\n-   `vs` - split into strings or symbols\n-   `~` - compare strings\n-   `=` - compare symbols\n-   `like` - check string pattern\n    -   `*` - match >= 0 any chars\n    -   `?` - match 1 char\n    -   `[0-9]` - match number\n    -   `[a-zA-Z]` - match alphabet\n","outputs":[]},{"kind":2,"language":"q","value":"-3!2022.10.09","outputs":[]},{"kind":2,"language":"q","value":"/ \"20#\" generate a 20 dates list, string format is cut off by console size\n-3!100#2022.10.09","outputs":[]},{"kind":2,"language":"q","value":"string 2022.10.09","outputs":[]},{"kind":2,"language":"q","value":"/ convert each item to string\nstring 20#2022.10.09","outputs":[]},{"kind":2,"language":"q","value":"/ [ATTENTION] generate list of single char string\nstring \"abc\"","outputs":[]},{"kind":2,"language":"q","value":"\",\" sv (\"7203.T\";\"8306.T\";\"2229.T\")","outputs":[]},{"kind":2,"language":"q","value":"/ symbols\n` sv `7203`T","outputs":[]},{"kind":2,"language":"q","value":"/ the first symbol is a file symbol\n` sv `:/tmp`var`data","outputs":[]},{"kind":2,"language":"q","value":"/ even the second part has one char, it is a string\n\".\" vs \"7203.T\"","outputs":[]},{"kind":2,"language":"q","value":"/ split by dot\n` vs `7203.T","outputs":[]},{"kind":2,"language":"q","value":"/ split by last \"/\"\n` vs `:/tmp/var/data","outputs":[]},{"kind":2,"language":"q","value":"/ compare each char\n\"7203.T\"=\"6803.T\"","outputs":[]},{"kind":2,"language":"q","value":"/ compare the whole string, exact match use ~, which is faster than like\n\"7203.T\"~\"6803.T\"","outputs":[]},{"kind":2,"language":"q","value":"/ symbol is an atom, so they can be compared using =\n`7203.T=`6803.T","outputs":[]},{"kind":2,"language":"q","value":"\"7203.T\" like \"7*\"","outputs":[]},{"kind":2,"language":"q","value":"\"7203.T\" like \"7?????\"","outputs":[]},{"kind":2,"language":"q","value":"\"7203.T\" like \"[0-7]*\"","outputs":[]},{"kind":2,"language":"q","value":"\"7203.T\" like \"[a-z]*\"","outputs":[]},{"kind":1,"language":"markdown","value":"#### Attributes\n\nApplying attributes to a huge list can boost performance, but this operation doesn't update list, so it can fail if the list doesn't fullfil the attribute.\n\n-   `s` - sorted, requires values are sorted\n    -   lookup by binary search\n    -   preserved if possible\n-   `u` - unique, requires values are unique\n    -   lookup by hash table\n    -   preserved in memory if possible\n-   `g` - group,\n    -   lookup by hash table to indices\n    -   preserved in memory if possible\n-   `p` - parted, requires same values are adjacent\n    -   lookup by hash table to start and end index\n    -   lost if any operation on the list\n","outputs":[]},{"kind":2,"language":"q","value":"`s#1 3 5 7 9","outputs":[]},{"kind":2,"language":"q","value":"l:`s#1 3 5 7 9;\n/ preserve attribute\nupsert[l;9]","outputs":[{"mime":"x-application/q-notebook","value":{"type":"text","data":["`s#1 3 5 7 9 9"],"duration":1,"uniqLabel":",localhost-1800-timeout","query":"l:`s#1 3 5 7 9;\n/ preserver attribute\nupsert[l;9]"}},{"mime":"text/x-json","value":{"type":"text","data":["`s#1 3 5 7 9 9"],"duration":1,"uniqLabel":",localhost-1800-timeout","query":"l:`s#1 3 5 7 9;\n/ preserver attribute\nupsert[l;9]"}}]},{"kind":2,"language":"q","value":"`s#1 5 3 7 9","outputs":[]},{"kind":2,"language":"q","value":"`u#1 3 5 7 9","outputs":[]},{"kind":2,"language":"q","value":"l:`u#1 3 5 7 9;\n/ preserve attribute\nupsert[l;11]","outputs":[{"mime":"x-application/q-notebook","value":{"type":"text","data":["`u#1 3 5 7 9 11"],"duration":1,"uniqLabel":",localhost-1800-timeout","query":"l:`u#1 3 5 7 9;\n/ attribute is kept\nupsert[l;11]"}},{"mime":"text/x-json","value":{"type":"text","data":["`u#1 3 5 7 9 11"],"duration":1,"uniqLabel":",localhost-1800-timeout","query":"l:`u#1 3 5 7 9;\n/ attribute is kept\nupsert[l;11]"}}]},{"kind":2,"language":"q","value":"`u#1 3 3 7 9","outputs":[]},{"kind":2,"language":"q","value":"`g#10?10","outputs":[]},{"kind":2,"language":"q","value":"`p#3 3 3 9 9","outputs":[]},{"kind":2,"language":"q","value":"l:`p#3 3 3 9 9;\n/ lost attribute\nupsert[l;9]","outputs":[{"mime":"x-application/q-notebook","value":{"type":"text","data":["3 3 3 9 9 9"],"duration":0,"uniqLabel":",localhost-1800-timeout","query":"l:`p#3 3 3 9 9;\nupsert[l;9]"}},{"mime":"text/x-json","value":{"type":"text","data":["3 3 3 9 9 9"],"duration":0,"uniqLabel":",localhost-1800-timeout","query":"l:`p#3 3 3 9 9;\nupsert[l;9]"}}]},{"kind":2,"language":"q","value":"`p#3 3 9 3 9","outputs":[]},{"kind":1,"language":"markdown","value":"#### Useful Operators and Functions for List\n\nHover to the function to see the explanation","outputs":[]},{"kind":2,"language":"q","value":"til 9","outputs":[]},{"kind":2,"language":"q","value":"distinct 9 1 9 2 9 3 9 ","outputs":[]},{"kind":2,"language":"q","value":"where 111000111b","outputs":[]},{"kind":2,"language":"q","value":"where 3 1 2","outputs":[]},{"kind":2,"language":"q","value":"/ values of returned dictionary are indices\ngroup 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"/ take first\n3#9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"5 3#9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"flip 5 3#9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"3 3#1,3#0","outputs":[]},{"kind":2,"language":"q","value":"/ 1-2, 3-4, 5-8\n1 3 5 cut til 9","outputs":[]},{"kind":2,"language":"q","value":"/ take last\n-3#9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"/ take repeatedly\n9#9 1 9","outputs":[]},{"kind":2,"language":"q","value":"/ take without exceeding length og list\n9 sublist 9 1 9","outputs":[]},{"kind":2,"language":"q","value":"/ 0N is null long\nprev 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"next 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"3 xprev 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"3 rotate 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"/ generate random number\n9 ? 9","outputs":[]},{"kind":2,"language":"q","value":"/ look up\n9 1 9 2 9 3 9 ? 3 2","outputs":[]},{"kind":2,"language":"q","value":"/ fill nulls\n9^0N 1 0N 2 0N 3 0N","outputs":[]},{"kind":2,"language":"q","value":"fills 0N 1 0N 2 0N 3 0N","outputs":[]},{"kind":2,"language":"q","value":"9 in 5 + til 5","outputs":[]},{"kind":2,"language":"q","value":"asc 9 1 9 2 9 3 9","outputs":[]},{"kind":2,"language":"q","value":"desc 9 1 9 2 9 3 9","outputs":[]},{"kind":1,"language":"markdown","value":"#### Dictionary\n\nSimilar to map in golang, dict in python. However, q allows all kinds of data types as dictionary keys and duplicate keys. To Get values by keys, q gets indices of keys and apply indices to values.\n\n-   `!` - operator to create a dictionary, it takes **two lists** as parameters\n-   `()!()` - an empty dictionary\n-   `dict[existingKey]` - get a record\n-   `dict[existingKey]:newValue` - update a record\n-   `dict[newKey]:newValue` - append a record\n-   `dict0,dict1` - join two dictionary\n-   apply sort attribute **to a dictionary** to get a step function\n-   apply attribute **to keys** of a huge dictionary for effectively looking up\n-   `?` - look up value and return key\n","outputs":[]},{"kind":2,"language":"q","value":"/ ERROR, atom key and atom value\n`2229.T!3015","outputs":[]},{"kind":2,"language":"q","value":"((),`2229.T)!(),3015","outputs":[]},{"kind":2,"language":"q","value":"type ((),`2229.T)!(),3015","outputs":[]},{"kind":2,"language":"q","value":"`2229.T`8306.T!3015 652.7","outputs":[]},{"kind":2,"language":"q","value":"(`2229.T`8306.T`2229.T!3015 652.7 3016)[`8306.T]","outputs":[]},{"kind":2,"language":"q","value":"(`2229.T`8306.T`2229.T!3015 652.7 3016)[`2229.T]","outputs":[]},{"kind":2,"language":"q","value":"/ function[x;y] => function . (x;y)\n(!) . flip (\n    (`startDate ; .z.D-30);\n    (`endDate   ; .z.D);\n    (`dateType  ; `msci);\n    / no semicolon at the end of last line\n    (`market    ; `JP)\n )","outputs":[]},{"kind":2,"language":"q","value":"priceDict:()!();\npriceDict[`2229.T]:3015;\npriceDict","outputs":[]},{"kind":2,"language":"q","value":"/ not throw error, but return a null\npriceDict:()!();\npriceDict[`2229.T]:3015;\npriceDict[`8306.T]","outputs":[]},{"kind":2,"language":"q","value":"priceDict0:`2229.T`8306.T!3015 652.7;\npriceDict1:`9020.T`8252.T!7663 2496;\npriceDict0,priceDict1","outputs":[]},{"kind":2,"language":"q","value":"defaultParams:`startDate`endDate`market!(2022.10.01;2022.10.31;`TSE);\ninputParams:`startDate`market!(2022.09.01;`HKG);\ndefaultParams,inputParams","outputs":[]},{"kind":2,"language":"q","value":"/ if keys is a sorted list, apply sort(`s#) attribute to the dictionary to get a step function\ncorporateActionAdjustment: `s# (2022.07.11 2022.08.10 2022.09.09 2022.10.09)!0.5 1 1.5 2;\n/ 2022.08.09 is not in the key, and 2022.08.09>=2022.07.11 and 2022.08.09 < 2022.09.09, it return value of 2022.07.11\ncorporateActionAdjustment[2022.08.09 2022.09.09]","outputs":[]},{"kind":2,"language":"q","value":"/ use \\ts:loopTimes to test performance, it returns ms memoryUsed\n/ apply unique(`u#) attribute to the keys\nuniqDict:(`u#til 100000)!100000 - til 100000;\nnonUniqDict:(til 100000)!100000 - til 100000;","outputs":[]},{"kind":2,"language":"q","value":"\\ts:10000 uniqDict 99999","outputs":[]},{"kind":2,"language":"q","value":"\\ts:10000 nonUniqDict 99999","outputs":[]},{"kind":2,"language":"q","value":"priceDict:`9020.T`8252.T!7663 2496;\npriceDict?7663","outputs":[]},{"kind":1,"language":"markdown","value":"#### Useful Operators and Functions for Dictionary\n\nIn most cases, function is apply to values","outputs":[]},{"kind":2,"language":"q","value":"/ take\n`9020.T`2229.T#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"/ left operand must be a list\n`2229.T#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"((),`2229.T)#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"/ drop\n`9020.T`2229.T _`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"((),`2229.T) _`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"neg `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"key `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"value `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;","outputs":[]},{"kind":2,"language":"q","value":"qtyDict0:`2229.T`8306.T!1000 500;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0+qtyDict1","outputs":[]},{"kind":2,"language":"q","value":"qtyDict0:`2229.T`8306.T!1000 500;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0-qtyDict1","outputs":[]},{"kind":2,"language":"q","value":"qtyDict0:`2229.T`8306.T!500 1000;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0=qtyDict1","outputs":[]},{"kind":2,"language":"q","value":"qtyDict0:`2229.T`8306.T!500 1000;\nqtyDict1:`2229.T`8252.T!500 500;\nwhere qtyDict0=qtyDict1","outputs":[]},{"kind":1,"language":"markdown","value":"#### Table\n\n-   `([]column0:list0;column1:list1;column2:list2)` - create a table\n-   `([column0:list0]column1:list1;column2:list2)` - create a keyed table, a dictionary\n-   table is a list of dictionaries\n-   table is a flip of dictionary, each value must be list type\n","outputs":[]},{"kind":2,"language":"q","value":"([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500)","outputs":[]},{"kind":2,"language":"q","value":"type ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500)","outputs":[]},{"kind":2,"language":"q","value":"sym:`2229.T`8306.T;\nprice:3015 652.7;\nqty:1000 500;\n([]sym;price;qty)","outputs":[]},{"kind":2,"language":"q","value":"/ values of columns are atom\n([]sym:`2229.T;price:3015;qty:1000)","outputs":[]},{"kind":2,"language":"q","value":"([sym:`2229.T`8306.T]price:3015 652.7;qty:1000 500)","outputs":[]},{"kind":2,"language":"q","value":"enlist `sym`price`qty!(`2229.T;3015;1000)","outputs":[]},{"kind":2,"language":"q","value":"flip `sym`price`qty!(`2229.T`8306.T;3015 652.7;1000 500)","outputs":[]},{"kind":2,"language":"q","value":"/ values of dictionary are atom\nflip `sym`price`qty!(`2229.T;3015;1000)","outputs":[]},{"kind":1,"language":"markdown","value":"#### Useful Operators and Functions for Table","outputs":[]},{"kind":2,"language":"q","value":"meta ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"cols ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"count ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"first ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"last ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"/ an empty table\n0# ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);","outputs":[]},{"kind":2,"language":"q","value":"trade[`sym]","outputs":[]},{"kind":2,"language":"q","value":"trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\nupsert[trade;(`9020.T;7663.0;500)]","outputs":[]},{"kind":2,"language":"q","value":"","outputs":[]},{"kind":2,"language":"q","value":"trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\n/ not persist\nupsert[trade;(`9020.T;7663.0;500)];\ntrade","outputs":[]},{"kind":2,"language":"q","value":"trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\n/ use symbol to persist upsert\nupsert[`trade;(`9020.T;7663.0;500)];\ntrade","outputs":[]}]
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### Date Types\n\n| \\*  | n   | c   | name      | size | literal                       | null | inf |\n| --- | --- | --- | --------- | ---- | ----------------------------- | ---- | --- |\n|     | 0   |     | list      |      |                               |      |     |\n| \\*  | 1   | b   | boolean   | 1    | 0b                            |      |     |\n|     | 2   | g   | guid      | 16   |                               | 0Ng  |     |\n|     | 5   | h   | short     | 2    | 0h                            | 0Nh  | 0Wh |\n|     | 6   | i   | int       | 4    | 0i                            | 0Ni  | 0Wi |\n| \\*  | 7   | j   | long      | 8    | 0j                            | 0Nj  | 0Wj |\n|     | 8   | e   | real      | 4    | 0e                            | 0Ne  | 0We |\n| \\*  | 9   | f   | float     | 8    | 0f                            | 0n   | 0w  |\n| \\*  | 10  | c   | char      | 1    | \" \"                           | \" \"  |     |\n| \\*  | 11  | s   | symbol    |      | \\`                            | \\`   |     |\n| \\*  | 12  | p   | timestamp | 8    | 2000.01.01D00:00:00.000000000 | 0Np  | 0Wp |\n|     | 13  | m   | month     | 4    | 2000.01m                      | 0Nm  |     |\n| \\*  | 14  | d   | date      | 4    | 2000.01.01                    | 0Nd  | 0Wd |\n|     | 16  | n   | timespan  | 8    | 00:00:00.000000000            | 0Nn  | 0Wn |\n|     | 17  | u   | minute    | 4    | 00:00                         | 0Nu  | 0Wu |\n|     | 18  | v   | second    | 4    | 00:00:00                      | 0Nv  | 0Wv |\n|     | 19  | t   | time      | 4    | 00:00:00.000                  | 0Nt  | 0Wt |\n|     | 98  |     | table     |      |                               |      |     |\n|     | 99  |     | dict      |      |                               |      |     |\n\n> \\* important primitive data types\n\n#### Test Data Types\n\n-   `.Q.ty`: test data type function, return a char(`c` column)\n    -   lower letter: atom\n    -   upper letter: generic list\n    -   empty char: anything else\n-   `type`: test data type function, return a short number(`n` column)\n    -   negative: atom\n    -   0: mixed types list\n    -   positive: list, table and dict etc.\n\n#### Cast Data Types\n\n-   `$`: cast function\n    -   use `c` or `name` column to cast a non-string\n    -   use upper `c` column to cast a string\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": ".Q.ty 0f",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": ".Q.ty 0 1f",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": ".Q.ty (0;`a)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type 0f",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type 0 1f",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type (0;`a)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"p\"$1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`timestamp$1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ NOT RECOMMENDED\n12h$1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"D\"$\"2022-10-07\"",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Atom\n\n-   `1b` - true\n-   `0b` - false\n-   `\" \"` - a char atom, the null char atom\n-   `\"\"` - a string, list of char, not an atom\n-   symbol atom as below\n\n```q\n/ a symbol atom, starts with backtick\n`7203.T\n\n/ a socket symbol atom, starts with backtick and colon\n`:localhost:1800\n\n/ a file symbol atom, starts with backtick and colon\n`:trade.csv\n```\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ generate a random GUID\n1?0Ng",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "1+0N",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ in memory, \n/   null long 0N = MIN_LONG -9223372036854775808\n/   -Infinity -0W = MIN_LONG+1 -9223372036854775807\n/   Infinity 0W = MAX_LONG 9223372036854775807\n0W+1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "0W+2",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "0W-1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "sum 1 0N",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "sum 1 0W",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### List(Array)\n\n-   `enlist` - convert any to a list\n-   `()` - an empty list\n-   `,` - join\n-   `(),` - convert an atom to a list\n-   `count` - get length of the list\n-   `first` - get the first item in a list\n-   `last` - get the last item in a list\n-   `type` of generic list, includes same data type atoms, is a positive short integer\n-   `type` of non generic list is 0h, hence **list of strings is 0h**\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ list of boolean\n111000b;\n\n/ list of long\n1 2 3;\n\n/ list of float\n1 2 3f;\n1.0 2 3;\n\n/ list of timestamp\n2022.10.09D11 2022.10.09D12 2022.10.09D13;\n\n/ list of date\n2022.10.09 2022.10.10 2022.10.11;\n\n/ list of char\n\"string\";\n\n/ list of string\n(\"7203.T\";\"8306.T\";\"4921.T\");\n\n/ list of symbol\n`7203.T`8306.T`4921.T;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type enlist `a;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type (), `a;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ list of list of symbol\ntype enlist `a`b`c;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ still list of symbol\ntype (), `a`b`c;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ list includes identifier\nfloat0: 3.1415;\nfloat1: 2.7182;\n(float0;float1;1.414)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ list of different data types\n(`a;\"a\";1 2 3)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ join an atom to a list\nsymbols: `a`b`c;\n99,symbols",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ join a list to a list\nsymbols: `a`b`c;\n99 99,symbols",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ 1 2 3 is one item\ncount (`a;\"a\";1 2 3)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "first (`a;\"a\";1 2 3)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "last (`a;\"a\";1 2 3)",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "##### Raze Lists\n\n-   `raze` or `(,/)` - raze list of lists\n-   `(,//)` - raze recursively\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "(,/)(`a`b`c;\"abc\";(1 2 3;4 5 6;7 8 9))",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "(,//)(,/)(`a`b`c;\"abc\";(1 2 3;4 5 6;7 8 9))",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "##### Access and Update Item in List\n\n-   `list[indices]` or `list@indices` - access item in list\n-   `list[indices]:newItem` - update item in list\n-   `list[indices;indices...]` or `list . (indices;indices...)` - access item in nested list\n-   `list[indices;indices...]:newItem` - update item in nested list",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "longList: 1 2 3 4;\nlongList@1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "longList: 1 2 3 4;\nlongList[2]:9;\nlongList",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "longList: 1 2 3 4;\nlongList[1 3]:9;\nlongList",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "mixedList: (1;`a;3.14;2022.10.09);\nmixedList@0 2",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "mixedList: (1;`a;3.14;2022.10.09);\nmixedList[2]:2.7182;\nmixedList",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "mixedList: (1;`a;3.14;2022.10.09);\nmixedList[1 3]:2.7182;\nmixedList",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ longList is a generic list, which to be updated with same data type item\nlongList: 1 2 3 4;\nlongList[2]:`a;\nlongList",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "##### String vs Symbol\n\n-   `-3!` - std output of the item, control by console size `-c`, mainly for log output\n-   `string` - convert each item to string format\n-   `sv` - join strings or symbols\n-   `vs` - split into strings or symbols\n-   `~` - compare strings\n-   `=` - compare symbols\n-   `like` - check string pattern\n    -   `*` - match >= 0 any chars\n    -   `?` - match 1 char\n    -   `[0-9]` - match number\n    -   `[a-zA-Z]` - match alphabet\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "-3!2022.10.09",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ \"20#\" generate a 20 dates list, string format is cut off by console size\n-3!100#2022.10.09",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "string 2022.10.09",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ convert each item to string\nstring 20#2022.10.09",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ [ATTENTION] generate list of single char string\nstring \"abc\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\",\" sv (\"7203.T\";\"8306.T\";\"2229.T\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ symbols\n` sv `7203`T",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ the first symbol is a file symbol\n` sv `:/tmp`var`data",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ even the second part has one char, it is a string\n\".\" vs \"7203.T\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ split by dot\n` vs `7203.T",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ split by last \"/\"\n` vs `:/tmp/var/data",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ compare each char\n\"7203.T\"=\"6803.T\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ compare the whole string, exact match use ~, which is faster than like\n\"7203.T\"~\"6803.T\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ symbol is an atom, so they can be compared using =\n`7203.T=`6803.T",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"7203.T\" like \"7*\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"7203.T\" like \"7?????\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"7203.T\" like \"[0-7]*\"",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\"7203.T\" like \"[a-z]*\"",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Attributes\n\nApplying attributes to a huge list can boost performance, but this operation doesn't update list, so it can fail if the list doesn't fullfil the attribute.\n\n-   `s` - sorted, requires values are sorted\n    -   lookup by binary search\n    -   preserved if possible\n-   `u` - unique, requires values are unique\n    -   lookup by hash table\n    -   preserved in memory if possible\n-   `g` - group,\n    -   lookup by hash table to indices\n    -   preserved in memory if possible\n-   `p` - parted, requires same values are adjacent\n    -   lookup by hash table to start and end index\n    -   lost if any operation on the list\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`s#1 3 5 7 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "l:`s#1 3 5 7 9;\n/ preserve attribute\nupsert[l;9]",
+    "outputs": [
+      {
+        "mime": "x-application/q-notebook",
+        "value": {
+          "type": "text",
+          "data": [
+            "`s#1 3 5 7 9 9"
+          ],
+          "duration": 1,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`s#1 3 5 7 9;\n/ preserver attribute\nupsert[l;9]"
+        }
+      },
+      {
+        "mime": "text/x-json",
+        "value": {
+          "type": "text",
+          "data": [
+            "`s#1 3 5 7 9 9"
+          ],
+          "duration": 1,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`s#1 3 5 7 9;\n/ preserver attribute\nupsert[l;9]"
+        }
+      }
+    ]
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`s#1 5 3 7 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`u#1 3 5 7 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "l:`u#1 3 5 7 9;\n/ preserve attribute\nupsert[l;11]",
+    "outputs": [
+      {
+        "mime": "x-application/q-notebook",
+        "value": {
+          "type": "text",
+          "data": [
+            "`u#1 3 5 7 9 11"
+          ],
+          "duration": 1,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`u#1 3 5 7 9;\n/ attribute is kept\nupsert[l;11]"
+        }
+      },
+      {
+        "mime": "text/x-json",
+        "value": {
+          "type": "text",
+          "data": [
+            "`u#1 3 5 7 9 11"
+          ],
+          "duration": 1,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`u#1 3 5 7 9;\n/ attribute is kept\nupsert[l;11]"
+        }
+      }
+    ]
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`u#1 3 3 7 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`g#10?10",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`p#3 3 3 9 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "l:`p#3 3 3 9 9;\n/ lost attribute\nupsert[l;9]",
+    "outputs": [
+      {
+        "mime": "x-application/q-notebook",
+        "value": {
+          "type": "text",
+          "data": [
+            "3 3 3 9 9 9"
+          ],
+          "duration": 0,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`p#3 3 3 9 9;\nupsert[l;9]"
+        }
+      },
+      {
+        "mime": "text/x-json",
+        "value": {
+          "type": "text",
+          "data": [
+            "3 3 3 9 9 9"
+          ],
+          "duration": 0,
+          "uniqLabel": ",localhost-1800-timeout",
+          "query": "l:`p#3 3 3 9 9;\nupsert[l;9]"
+        }
+      }
+    ]
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`p#3 3 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Useful Operators and Functions for List\n\nHover to the function to see the explanation",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "til 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "distinct 9 1 9 2 9 3 9 ",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "where 111000111b",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "where 3 1 2",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ values of returned dictionary are indices\ngroup 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ take first\n3#9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "5 3#9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "flip 5 3#9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "3 3#1,3#0",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ 1-2, 3-4, 5-8\n1 3 5 cut til 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ take last\n-3#9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ take repeatedly\n9#9 1 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ take without exceeding length og list\n9 sublist 9 1 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ 0N is null long\nprev 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "next 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "3 xprev 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "3 rotate 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ generate random number\n9 ? 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ look up\n9 1 9 2 9 3 9 ? 3 2",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ fill nulls\n9^0N 1 0N 2 0N 3 0N",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "fills 0N 1 0N 2 0N 3 0N",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "9 in 5 + til 5",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "asc 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "desc 9 1 9 2 9 3 9",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Dictionary\n\nSimilar to map in golang, dict in python. However, q allows all kinds of data types as dictionary keys and duplicate keys. To Get values by keys, q gets indices of keys and apply indices to values.\n\n-   `!` - operator to create a dictionary, it takes **two lists** as parameters\n-   `()!()` - an empty dictionary\n-   `dict[existingKey]` - get a record\n-   `dict[existingKey]:newValue` - update a record\n-   `dict[newKey]:newValue` - append a record\n-   `dict0,dict1` - join two dictionary\n-   apply sort attribute **to a dictionary** to get a step function\n-   apply attribute **to keys** of a huge dictionary for effectively looking up\n-   `?` - look up value and return key\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ ERROR, atom key and atom value\n`2229.T!3015",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "((),`2229.T)!(),3015",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type ((),`2229.T)!(),3015",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`2229.T`8306.T!3015 652.7",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "(`2229.T`8306.T`2229.T!3015 652.7 3016)[`8306.T]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "(`2229.T`8306.T`2229.T!3015 652.7 3016)[`2229.T]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ function[x;y] => function . (x;y)\n(!) . flip (\n    (`startDate ; .z.D-30);\n    (`endDate   ; .z.D);\n    (`dateType  ; `msci);\n    / no semicolon at the end of last line\n    (`market    ; `JP)\n )",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "priceDict:()!();\npriceDict[`2229.T]:3015;\npriceDict",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ not throw error, but return a null\npriceDict:()!();\npriceDict[`2229.T]:3015;\npriceDict[`8306.T]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "priceDict0:`2229.T`8306.T!3015 652.7;\npriceDict1:`9020.T`8252.T!7663 2496;\npriceDict0,priceDict1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "defaultParams:`startDate`endDate`market!(2022.10.01;2022.10.31;`TSE);\ninputParams:`startDate`market!(2022.09.01;`HKG);\ndefaultParams,inputParams",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ if keys is a sorted list, apply sort(`s#) attribute to the dictionary to get a step function\ncorporateActionAdjustment: `s# (2022.07.11 2022.08.10 2022.09.09 2022.10.09)!0.5 1 1.5 2;\n/ 2022.08.09 is not in the key, and 2022.08.09>=2022.07.11 and 2022.08.09 < 2022.09.09, it return value of 2022.07.11\ncorporateActionAdjustment[2022.08.09 2022.09.09]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ use \\ts:loopTimes to test performance, it returns ms memoryUsed\n/ apply unique(`u#) attribute to the keys\nuniqDict:(`u#til 100000)!100000 - til 100000;\nnonUniqDict:(til 100000)!100000 - til 100000;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\\ts:10000 uniqDict 99999",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "\\ts:10000 nonUniqDict 99999",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "priceDict:`9020.T`8252.T!7663 2496;\npriceDict?7663",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Useful Operators and Functions for Dictionary\n\nIn most cases, function is apply to values",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ take\n`9020.T`2229.T#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ left operand must be a list\n`2229.T#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "((),`2229.T)#`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ drop\n`9020.T`2229.T _`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "((),`2229.T) _`9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "neg `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "key `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "value `9020.T`8252.T`2229.T`8306.T!7663 2496 3015 652.7;",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "qtyDict0:`2229.T`8306.T!1000 500;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0+qtyDict1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "qtyDict0:`2229.T`8306.T!1000 500;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0-qtyDict1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "qtyDict0:`2229.T`8306.T!500 1000;\nqtyDict1:`2229.T`8252.T!500 500;\nqtyDict0=qtyDict1",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "qtyDict0:`2229.T`8306.T!500 1000;\nqtyDict1:`2229.T`8252.T!500 500;\nwhere qtyDict0=qtyDict1",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Table\n\n-   `([]column0:list0;column1:list1;column2:list2)` - create a table\n-   `([column0:list0]column1:list1;column2:list2)` - create a keyed table, a dictionary\n-   table is a list of dictionaries\n-   table is a flip of dictionary, each value must be list type\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "type ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "sym:`2229.T`8306.T;\nprice:3015 652.7;\nqty:1000 500;\n([]sym;price;qty)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ values of columns are atom\n([]sym:`2229.T;price:3015;qty:1000)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "([sym:`2229.T`8306.T]price:3015 652.7;qty:1000 500)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "enlist `sym`price`qty!(`2229.T;3015;1000)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "flip `sym`price`qty!(`2229.T`8306.T;3015 652.7;1000 500)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ values of dictionary are atom\nflip `sym`price`qty!(`2229.T;3015;1000)",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Useful Operators and Functions for Table",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "meta ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "cols ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "count ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "first ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "last ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ an empty table\n0# ([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "trade[`sym]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\nupsert[trade;(`9020.T;7663.0;500)]",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\n/ not persist\nupsert[trade;(`9020.T;7663.0;500)];\ntrade",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "trade:([]sym:`2229.T`8306.T;price:3015 652.7;qty:1000 500);\n/ use symbol to persist upsert\nupsert[`trade;(`9020.T;7663.0;500)];\ntrade",
+    "outputs": []
+  }
+]
