@@ -1,0 +1,44 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### write and read binary\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ `fileSymbol 1: any\n`:/tmp/longs 1: (15;12;36)",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ (enlist dateTypeChar;enlist sizeLong) 1: `fileSymbol\n(enlist \"j\";enlist 8) 1: `:/tmp/longs",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ projection null - k type 101, value 255\npNull: -9!0x010000000a00000065ff;",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### project null\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ assign a project null to rank 1 function becomes identity function (::)\n(sum pNull) til 10",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ not an useful use case, I will update this again when there is a better use case\ncube:pNull xexp 3;\ncube 6 ",
+    "outputs": []
+  }
+]

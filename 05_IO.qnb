@@ -1,0 +1,110 @@
+[
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### File\n\n#### String\n\n- `` `:fileSymbol 0: strings`` - write strings into a file. if only one line of string, make sure to `enlist` it\n- `` strings: read0 `:fileSymbol `` - read strings from a file\n- `` (dataTypeString;1#delimiterChar) 0: `:fileSymbol  `` - parse csv file with headers\n- `(dataTypeString;1#delimiterChar) 0: strings` - parse csv strings with headers\n- `` (dataTypeString;delimiterChar) 0: `:fileSymbol `` - parse csv file without headers\n- `(dataTypeString;delimiterChar) 0: strings` - parse csv file without headers\n- `delimiterChar: table` - convert table to delimited strings\n\n> use space (\" \") as date type char to skip the column\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ write a csv file\n`:/tmp/qForImpatient/trade.csv 0: (\"date,sym,qty,price\";\"2022-10-09,7203.T,1000,1985.5\");\n/ read a csv file by using a file symbol\n(\"DSFF\";1#\",\") 0: `:/tmp/qForImpatient/trade.csv",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ read file into strings\nstrings: read0 `:/tmp/qForImpatient/trade.csv;\nstrings",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ parse csv strings, if no title, no need '1#' here\n(\"DSFF\";1#\",\") 0: (\"date,sym,qty,price\";\"2022-10-09,7203.T,1000,1985.5\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ convert a table type to csv strings\ntrade: (\"DSFF\";1#\",\") 0: `:/tmp/qForImpatient/trade.csv;\n\",\" 0: trade",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ use a different delimiter\n\"|\" 0: trade",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Parse Key-Value\n\n- key date type\n- key and value separator, e.g. `=` in `key=value`\n- optional `*` for removing double quotation from double quoted strings\n- record separator, e.g. `|` in `key1=value1|key2=value2`\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ parse into two lists\n\"S=,\" 0: (\"date=2022-10-09,sym=7203.T,qty=1000,price=1985.5\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ parse into a dictionary\n(!) . \"S=,\" 0: (\"date=2022-10-09,sym=7203.T,qty=1000,price=1985.5\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ convert to correct data types\n\"DSJF\" $ (!) . \"S=|\" 0: (\"date=2022-10-09|sym=7203.T|qty=1000|price=1985.5\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ asterisk in \"S=*,\" to remove double quotation for last value\n(!) . \"S=*,\" 0: (\"date=2022-10-09,sym=7203.T,qty=1000,price=1985.5,name=\\\"Toyota Motor Corporation\\\"\")",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "/ without asterisk double quotation for last value will be kept\n(!) . \"S=,\" 0: (\"date=2022-10-09,sym=7203.T,qty=1000,price=1985.5,name=\\\"Toyota Motor Corporation\\\"\")",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "#### Binary\n\n- `` `:fileSymbol set anyData`` - save data as a binary file\n- `` get `:fileSymbo `` - get data from a binary file\n",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "`:/tmp/function set {}",
+    "outputs": []
+  },
+  {
+    "kind": 2,
+    "language": "q",
+    "value": "get `:/tmp/function",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### Handle",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### IPC",
+    "outputs": []
+  },
+  {
+    "kind": 1,
+    "language": "markdown",
+    "value": "### http/https",
+    "outputs": []
+  }
+]
